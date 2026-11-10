@@ -1,0 +1,91 @@
+# PQ-HEAL Home Hub — systemd unit for native deployment on a UWS (ASTON) edge node.
+#
+# Install:
+#   sudo install -m 0755 pq-heal-server /usr/local/bin/pq-heal-server
+#   sudo install -d -o pqheal -g pqheal -m 0750 /var/lib/pq-heal /etc/pq-heal
+#   sudo install -m 0640 -o root -g pqheal pq-heal.env /etc/pq-heal/pq-heal.env
+#   sudo install -m 0644 pq-heal-hub.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now pq-heal-hub
+
+[Unit]
+Description=PQ-HEAL Home Hub
+Documentation=https://github.com/UPRC/pq-heal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# A dedicated unprivileged account. The hub needs no privileged port: it binds
+# 9000 by default, and TLS termination is its own.
+User=pqheal
+Group=pqheal
+
+# The API key is read from an environment file rather than the command line, so
+# it does not appear in the process table or in systemctl output.
+EnvironmentFile=/etc/pq-heal/pq-heal.env
+
+ExecStart=/usr/local/bin/pq-heal-server \
+    -bind=${PQHEAL_BIND} \
+    -port=${PQHEAL_PORT} \
+    -tls-cert=/etc/pq-heal/server.crt \
+    -tls-key=/etc/pq-heal/server.key \
+    -model=/etc/pq-heal/anomaly-model.json \
+    -client-port-log=/var/lib/pq-heal/client-ports.csv \
+    -log=/var/lib/pq-heal/data.csv \
+    -key-store=/var/lib/pq-heal/server-keys.json \
+    -max-clients=1000 \
+    -evict-after=15m \
+    -alive-window=10s \
+    -rate-limit-rps=50 \
+    -rate-limit-burst=100 \
+    -access-log \
+    -log-format=json
+
+Restart=on-failure
+RestartSec=5s
+
+# --- Resource limits ---------------------------------------------------------
+# D1.1 Section 7.2 requires the hub to coexist with other testbed workloads
+# rather than assume exclusive access to the node. These caps are enforced by
+# the kernel through cgroup v2 and are set from the measured steady-state
+# footprint in D2.3 Section 7, with headroom.
+CPUQuota=50%
+MemoryMax=256M
+MemoryHigh=192M
+TasksMax=64
+
+# --- Hardening ---------------------------------------------------------------
+# The hub reads its configuration and writes two files. Everything else on the
+# filesystem is invisible or read-only to it.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+# The only writable path.
+ReadWritePaths=/var/lib/pq-heal
+
+# Network access is IPv4/IPv6 TCP only; the hub neither needs nor may use
+# anything else.
+RestrictAddressFamilies=AF_INET AF_INET6
+IPAddressAllow=any
+
+# Syscall filtering: a Go HTTP server needs no more than the standard set.
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

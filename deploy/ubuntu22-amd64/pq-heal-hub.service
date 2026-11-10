@@ -1,0 +1,32 @@
+[Unit]
+Description=PQ-HEAL Ubuntu 22.04 AMD64 Home Hub
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=pqheal
+Group=pqheal
+WorkingDirectory=/var/lib/pq-heal
+ExecStart=/opt/pq-heal/scripts/run-server.sh /etc/pq-heal/server.env
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=15s
+UMask=0077
+CPUQuota=50%
+MemoryMax=256M
+MemoryHigh=192M
+TasksMax=64
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadWritePaths=/var/lib/pq-heal
+[Install]
+WantedBy=multi-user.target

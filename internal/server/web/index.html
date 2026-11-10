@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>PQ-HEAL · Home Hub</title>
+  <link rel="stylesheet" href="/dashboard/style.css">
+  <script src="/dashboard/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">✳</div><div><strong>PQ-HEAL</strong><small>HOME HUB</small></div></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav><a class="nav-item active" href="#overview"><span class="nav-icon">▦</span> Overview</a><a class="nav-item" href="#sensors"><span class="nav-icon">◫</span> Sensors</a><a class="nav-item" href="#activity"><span class="nav-icon">◷</span> Activity</a></nav>
+      <div class="sidebar-bottom"><div class="side-card"><div class="side-card-icon">✦</div><strong>Care at the edge</strong><p>A calm view of every connected sensor, in real time.</p></div><div class="sidebar-footer"><span class="avatar">PH</span><span><strong>Home Hub</strong><small>Operator workspace</small></span><span class="footer-dots">···</span></div></div>
+    </aside>
+    <main id="overview" class="main">
+      <header class="topbar"><div class="breadcrumbs">Workspace <span>/</span> <b>Overview</b></div><div class="top-actions"><span class="today" id="today"></span><span class="top-divider"></span><span class="top-avatar">PH</span></div></header>
+      <div class="content">
+        <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> HOME HUB OVERVIEW</div><h1>A clearer picture of care<span class="period">.</span></h1><p>Monitor sensor health and recent readings from one place.</p></div><div id="connection-pill" class="connection-pill"><span class="live-dot"></span><span>Connecting</span></div></div>
+        <section class="welcome-banner" aria-label="Overview"><div class="banner-copy"><div class="banner-kicker">YOUR HOME HUB</div><h2>Good to see you.</h2><p>Live sensor readings appear here as soon as your devices connect.</p><a href="#sensors" class="banner-link">Explore sensors <span>↗</span></a></div><div class="banner-art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-heart">♡</div><div class="art-spark spark-one">✦</div><div class="art-spark spark-two">✧</div><div class="art-small"></div></div></section>
+        <section class="summary-grid" aria-label="Sensor summary"><article class="stat-card"><div class="stat-top"><span class="stat-icon mint">◈</span><span class="stat-caption">TOTAL SENSORS</span></div><div class="stat-number" id="total-count">—</div><div class="stat-foot">Registered with this Home Hub</div></article><article class="stat-card"><div class="stat-top"><span class="stat-icon lavender">↗</span><span class="stat-caption">ACTIVE NOW</span></div><div class="stat-number" id="active-count">—</div><div class="stat-foot"><span class="foot-dot green"></span> Seen in the last 10 seconds</div></article><article class="stat-card"><div class="stat-top"><span class="stat-icon peach">!</span><span class="stat-caption">NEEDS ATTENTION</span></div><div class="stat-number" id="attention-count">—</div><div class="stat-foot"><span class="foot-dot orange"></span> Stale or outside range</div></article><article class="stat-card"><div class="stat-top"><span class="stat-icon sky">◷</span><span class="stat-caption">LAST UPDATED</span></div><div class="stat-number time" id="last-updated">—</div><div class="stat-foot">Automatically refreshes every 5 seconds</div></article></section>
+        <section id="sensors" class="data-section"><div class="section-heading"><div><div class="section-kicker">MONITORING</div><h2>Sensor overview</h2><p>The latest reading from each connected client.</p></div><div class="section-controls"><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search sensors" aria-label="Search sensors"></label><select id="filter" aria-label="Filter sensors"><option value="all">All sensors</option><option value="active">Active</option><option value="attention">Needs attention</option></select></div></div><div class="table-wrap"><table><thead><tr><th>SENSOR</th><th>TYPE</th><th>LATEST READING</th><th>LAST SEEN</th><th>STATUS</th></tr></thead><tbody id="sensor-rows"><tr><td colspan="5" class="empty">Connecting to Home Hub…</td></tr></tbody></table></div><div class="table-footer"><span id="table-count">Waiting for data</span><span>Live data · refreshed every 5s</span></div></section>
+        <div class="bottom-grid"><section id="activity" class="info-card"><div class="section-kicker">SYSTEM STATUS</div><h2>Hub connection</h2><div class="hub-status"><div class="hub-symbol">⌁</div><div><strong id="hub-state">Checking connection</strong><p id="hub-description">Contacting the Home Hub server.</p></div></div><div class="subtle-rule"></div><p class="muted">Sensor status is based on the last heartbeat or reading. This dashboard shows current snapshots, not a clinical record.</p></section><section class="info-card note-card"><div class="section-kicker">A NOTE ON CARE</div><h2>Designed for clarity</h2><p>Readings outside configured thresholds are highlighted for review. The Home Hub assesses incoming telemetry at the edge; always follow your care team's procedures when responding.</p><div class="note-decoration" aria-hidden="true">✳</div></section></div>
+      </div>
+    </main>
+  </div>
+  <dialog id="auth-dialog"><form method="dialog" id="auth-form"><div class="dialog-icon">✳</div><h2>Connect to your Home Hub</h2><p>Enter the server API key to view live sensor data. The key stays in this browser tab.</p><label for="api-key">API key</label><input id="api-key" type="password" autocomplete="off" required placeholder="Enter API key"><div id="auth-error" class="auth-error" role="alert"></div><button type="submit">Connect to dashboard <span>→</span></button></form></dialog>
+</body>
+</html>
